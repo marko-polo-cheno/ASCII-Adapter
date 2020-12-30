@@ -4,4 +4,5 @@ Done in Python
 
 Created by:
 
-Mark Chen - Project Lead and Head 
+Mark Chen - Project Lead and Software Engineer
+
