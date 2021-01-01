@@ -41,6 +41,8 @@ def createGrayscaleImage(pixels, width, height, backgroundColour):
     # grayscale
     colour = "@MNZQUzj?+>;*-. "
 
+    choiceFactor = float(len(colour)) / 3.0 / 256.0
+
     output = ""
     # go thru pixels line by line
     for h in range(height):
@@ -55,8 +57,7 @@ def createGrayscaleImage(pixels, width, height, backgroundColour):
             # Rid of alpha
             rgb = rgba[:3]
 
-            output += colour[int(sum(rgb) / 3.0 / 256.0 * 16)]
-            #output += colour[int(sum(rgb) / 3.0 / 256.0 * 16)]
+            output += colour[int(sum(rgb) * choiceFactor)]
 
         output += "\n"
 
