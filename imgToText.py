@@ -164,7 +164,7 @@ def createColouredImage(pixels, width, height, htmlChar):
 """ #RRGGBB --> (R, G, B) tuple """
 def HTMLcolourToRGB(colourString):
     colouroutput = colourString.strip()
-    
+
     if colourString[0] == '#':
         colouroutput = colourString[1:]
     if len(colourString) != 6:
@@ -263,7 +263,9 @@ if __name__ == '__main__':
 
     html = template % (fontSize, output)
 
-    f = open("output.html", "w")
+
+    # Creates output html file based on name
+    f = open("output" + imageName[:-4] + ".html", "w")
     f.write(html)
     f.close()
 
