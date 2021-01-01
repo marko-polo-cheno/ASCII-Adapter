@@ -118,38 +118,41 @@ def ditherImageToWebPalette(img, backgroundColour):
         if img.mode != 'RGBA': 
             img = img.convert('RGBA')    
 
-        rgb_img = img.convert('RGB')    
+        rbgImg = img.convert('RGB')    
     
-        orig_pixels = img.load()
-        rgb_pixels = rgb_img.load()
+        originalPixels = img.load()
+        colouredPixels = rbgImg.load()
         width, height = img.size
 
         for h in range(height):    # set transparent pixels to black
             for w in range(width):
-                if (orig_pixels[w, h])[3] != 255:    
-                    rgb_pixels[w, h] = (0, 0, 0)   # set to black
+                if (originalPixels[w, h])[3] != 255:    
+                    colouredPixels[w, h] = (0, 0, 0)   # set to black
 
-        ditheredImage = floydsteinbergDitherToWebPalette(rgb_img)    
+        ditheredImage = floydsteinbergDitherToWebPalette(rbgImg)    
 
-        dithered_pixels = ditheredImage.load() # do it again
+        ditheredPixels = ditheredImage.load() # do it again
         
         for h in range(height):    # restore original RGBA for transparent pixels
             for w in range(width):
-                if (orig_pixels[w, h])[3] != 255:    
-                    dithered_pixels[w, h] = orig_pixels[w, h]   # restore
+                if (originalPixels[w, h])[3] != 255:    
+                    ditheredPixels[w, h] = originalPixels[w, h]   # restore
 
     return ditheredImage
+
 
 def createColouredImage(pixels, width, height, htmlChar):
 
     output = ""
 
-    # first go through the height,  otherwise will rotate
+    # For every pixel, make a coressponding coloured character
     for h in range(height):
         for w in range(width):
 
+            # RBGA tuple
             rgba = pixels[w, h]
 
+            # Coloured character HTML
             output += ("<span style=\"color:rgba({0}, {1}, {2}, {3});\">" + htmlChar + 
                 "</span>").format(rgba[0], rgba[1], rgba[2], rgba[3] / 255.0)
 
@@ -161,10 +164,11 @@ def createColouredImage(pixels, width, height, htmlChar):
 """ #RRGGBB --> (R, G, B) tuple """
 def HTMLcolourToRGB(colourString):
     colouroutput = colourString.strip()
+    
     if colourString[0] == '#':
         colouroutput = colourString[1:]
     if len(colourString) != 6:
-        raise ValueError("input #{0} is not in #RRGGBB format".format(colourString))
+        raise ValueError("the input #{0} needs to be in #RRGGBB format".format(colourString))
 
     r, g, b = colourString[:2], colourString[2:4], colourString[4:]
     # convert hexadecimal strings into numbers
