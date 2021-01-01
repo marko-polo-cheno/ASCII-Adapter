@@ -7,6 +7,7 @@ Options:
   -c --colour           outputs image as HTML with colour.
   -a --antialias        resizes image with antialiasing
   -d --dither           dither image colours to web palette.
+  --char=<n>            sets the character to use in the HTML representation - default: "&#9607;" a whole character's dedicated space
   --fontSize=<n>        sets the font size of HTML output - default: 8px
   --maxHeight=<n>       resize image so that the height matches maxHeight - default: 100px
   --backgroundColour=<#RRGGBB>  adds specified background colour
@@ -16,14 +17,10 @@ Options:
 import sys
 from docopt import docopt
 from PIL import Image
-       
-
-
-
 
 
 def colourBlender(sourceRBG, blendWithRBG):
-    # See https://en.wikipedia.org/wiki/Alpha_compositing - section on "Alpha Blending"
+    # See https://en.wikipedia.org/wiki/Alpha_compositing
     conversion = 255.0
     sourceRBGFactor = (sourceRBG[3] / conversion)
     blendWithRBGFactor = (blendWithRBG[3] / conversion) * (1 - sourceRBGFactor)
@@ -44,30 +41,26 @@ def createGrayscaleImage(pixels, width, height, backgroundColour):
     # grayscale
     colour = "@MNZQUzj?+>;*-. "
 
-    string = ""
-    # first go through the height,  otherwise will rotate
+    output = ""
+    # go thru pixels line by line
     for h in range(height):
         for w in range(width):
 
             rgba = pixels[w, h]
 
-            # If partial transparency and we have a backgroundColour, combine with bg
-            # colour
+            # If transparency and has backgroundColour, combine with background colour
             if rgba[3] != 255 and backgroundColour is not None:
                 rgba = colourBlender(rgba, backgroundColour)
 
-            # Throw away any alpha (either because backgroundColour was partially
-            # transparent or had no bg colour)
-            # Could make a case to choose character to draw based on alpha but
-            # not going to do that now...
+            # Rid of alpha
             rgb = rgba[:3]
 
-            string += colour[int(sum(rgb) / 3.0 / 256.0 * 16)]
-            #string += colour[int(sum(rgb) / 3.0 / 256.0 * 16)] # mc
+            output += colour[int(sum(rgb) / 3.0 / 256.0 * 16)]
+            #output += colour[int(sum(rgb) / 3.0 / 256.0 * 16)]
 
-        string += "\n"
+        output += "\n"
 
-    return string
+    return output
 
 
 def loadImageResized(imageName, antialias, maxHeight, widthAspectRatio):
@@ -77,11 +70,11 @@ def loadImageResized(imageName, antialias, maxHeight, widthAspectRatio):
 
     img = Image.open(imageName)
 
-    # force image to RGBA - deals with palettized images (e.g. gif) etc.
+    # force image to RGBA
     if img.mode != 'RGBA':
         img = img.convert('RGBA')
 
-    # need to change the size of the image?
+    # change image size if needed
     if maxHeight is not None or widthAspectRatio != 1.0:
 
         oldWidth, oldHeight = img.size
@@ -89,13 +82,11 @@ def loadImageResized(imageName, antialias, maxHeight, widthAspectRatio):
         newWidth = oldWidth
         newHeight = oldHeight
 
-        # First apply aspect ratio change (if any) - just need to adjust one axis
-        # so we'll do the height.
+        # Aspect ratio change
         if widthAspectRatio != 1.0:
             newHeight = int(float(widthAspectRatio) * newHeight)
 
-        # Now isotropically resize up or down (preserving aspect ratio) such that 
-        # longer side of image is maxHeight 
+        # Resize based on max height
         if maxHeight is not None:
             rate = float(maxHeight) / newHeight
             newWidth = int(rate * newWidth)  
@@ -118,13 +109,11 @@ def floydsteinbergDitherToWebPalette(img):
 def ditherImageToWebPalette(img, backgroundColour):
     
     if backgroundColour is not None:
-        # We know the background colour so flatten the image and bg colour together, thus getting rid of alpha
-        # This is important because as discussed below, dithering alpha doesn't work correctly.
         img = Image.alpha_composite(Image.new("RGBA", img.size, backgroundColour), img)  # alpha blend onto image filled with backgroundColour
         ditheredImage = floydsteinbergDitherToWebPalette(img)    
     else:
         
-        # Force image to RGBA if it isn't already - simplifies the rest of the code    
+        # RGBA if it isn't already - simplifies the rest of the code    
         if img.mode != 'RGBA': 
             img = img.convert('RGBA')    
 
@@ -137,22 +126,22 @@ def ditherImageToWebPalette(img, backgroundColour):
         for h in range(height):    # set transparent pixels to black
             for w in range(width):
                 if (orig_pixels[w, h])[3] != 255:    
-                    rgb_pixels[w, h] = (0, 0, 0)   # bashing in a new value changes it!
+                    rgb_pixels[w, h] = (0, 0, 0)   # set to black
 
         ditheredImage = floydsteinbergDitherToWebPalette(rgb_img)    
 
-        dithered_pixels = ditheredImage.load() # must do it again
+        dithered_pixels = ditheredImage.load() # do it again
         
         for h in range(height):    # restore original RGBA for transparent pixels
             for w in range(width):
                 if (orig_pixels[w, h])[3] != 255:    
-                    dithered_pixels[w, h] = orig_pixels[w, h]   # bashing in a new value changes it!
+                    dithered_pixels[w, h] = orig_pixels[w, h]   # restore
 
     return ditheredImage
 
 def createColouredImage(pixels, width, height, htmlChar):
 
-    string = ""
+    output = ""
 
     # first go through the height,  otherwise will rotate
     for h in range(height):
@@ -160,19 +149,19 @@ def createColouredImage(pixels, width, height, htmlChar):
 
             rgba = pixels[w, h]
 
-            string += ("<span style=\"color:rgba({0}, {1}, {2}, {3});\">" + 
-                htmlChar + "</span>").format(rgba[0], rgba[1], rgba[2], rgba[3] / 255.0)
+            output += ("<span style=\"color:rgba({0}, {1}, {2}, {3});\">" + htmlChar + 
+                "</span>").format(rgba[0], rgba[1], rgba[2], rgba[3] / 255.0)
 
-        string += "\n"
+        output += "\n"
 
-    return string
+    return output
 
 
 """ #RRGGBB --> (R, G, B) tuple """
 def HTMLcolourToRGB(colourString):
-    colourString = colourString.strip()
+    colouroutput = colourString.strip()
     if colourString[0] == '#':
-        colourString = colourString[1:]
+        colouroutput = colourString[1:]
     if len(colourString) != 6:
         raise ValueError("input #{0} is not in #RRGGBB format".format(colourString))
 
@@ -238,9 +227,9 @@ if __name__ == '__main__':
     width, height = img.size
 
     if coloured:
-        string = createColouredImage(pixel, width, height, htmlChar)
+        output = createColouredImage(pixel, width, height, htmlChar)
     else:
-        string = createGrayscaleImage(
+        output = createGrayscaleImage(
             pixel, width, height, backgroundColour)
 
 
@@ -267,7 +256,7 @@ if __name__ == '__main__':
     </html>
     """
 
-    html = template % (fontSize, string)
+    html = template % (fontSize, output)
 
     f = open("output.html", "w")
     f.write(html)
