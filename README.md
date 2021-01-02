@@ -8,4 +8,4 @@ Mark Chen - Lead Software Engineer
 Bonnie Peng - Software Engineer  
 Ted Weng - Software Engineer  
 Tiffany Chiu - Software Engineer  
-Nicole Shi -- Software Engineer
+Nicole Shi - Software Engineer
