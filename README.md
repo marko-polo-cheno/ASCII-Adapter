@@ -17,7 +17,7 @@ See our other project done in parallel which takes [GIFs and creates the same th
 <p align="center"><img width=50% src="https://github.com/marko-polo-cheno/Abstract-ASCII-Adapter/blob/main/calcifer.jpg"></p>
 
 ### HTML output
-https://github.com/marko-polo-cheno/Abstract-ASCII-Adapter/blob/main/outputcalcifer.html
+https://htmlpreview.github.io/?https://github.com/marko-polo-cheno/Abstract-ASCII-Adapter/blob/main/outputcalcifer.html
 
 ## Usage:
 
