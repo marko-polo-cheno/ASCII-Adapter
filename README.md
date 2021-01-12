@@ -11,3 +11,23 @@ Tiffany Chiu - Software Engineer
 Nicole Shi - Software Engineer
 
 See our other project done in parallel which takes [GIFs and creates the same thing in text form.](https://github.com/tiffxnychiu/GIF-to-ASCII)
+
+## Demonstration
+### Original
+<p align="center"><img width=50% src="https://github.com/marko-polo-cheno/Abstract-ASCII-Adapter/blob/main/calcifer.jpg"></p>
+
+### HTML output
+https://github.com/marko-polo-cheno/Abstract-ASCII-Adapter/blob/main/outputcalcifer.html
+
+## Usage:
+
+```
+python imgToText.py calcifer.jpg --maxHeight=60 -c -a --char=@ --heightRatio=0.6
+```
+
+## Dependencies:
+
+```
+pip install Pillow>=8.0.1
+pip install docopt>=0.6.2
+```
