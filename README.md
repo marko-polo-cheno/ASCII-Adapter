@@ -1,6 +1,6 @@
 # Abstract-ASCII-Adapter
-Takes in pictures and creates the same thing in coloured text form.  
-Done in Python  
+Converts images to coloured ASCII text
+*Done in Python*
 
 Created by University of Waterloo first and second year CS students:  
 
