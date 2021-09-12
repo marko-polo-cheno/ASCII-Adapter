@@ -1,4 +1,4 @@
-# Abstract-ASCII-Adapter
+#ASCII-Adapter
 Converts images to coloured ASCII text  
 *Done in Python*
 
