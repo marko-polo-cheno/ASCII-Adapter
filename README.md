@@ -1,6 +1,6 @@
 # ASCII-Adapter
 Converts images to coloured ASCII text  
-## See our other project done in parallel which takes [GIFs and creates the same thing in text form.](https://github.com/tiffxnychiu/GIF-to-ASCII)
+### See our other project done in parallel which takes [GIFs and creates the same thing in text form.](https://github.com/tiffxnychiu/GIF-to-ASCII)
 
 *Done in Python*
 
