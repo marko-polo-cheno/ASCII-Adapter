@@ -1,5 +1,7 @@
-#ASCII-Adapter
+# ASCII-Adapter
 Converts images to coloured ASCII text  
+See our other project done in parallel which takes [GIFs and creates the same thing in text form.](https://github.com/tiffxnychiu/GIF-to-ASCII)
+
 *Done in Python*
 
 Created by University of Waterloo first and second year CS students:  
@@ -10,7 +12,6 @@ Ted Weng - Software Engineer
 Tiffany Chiu - Software Engineer  
 Nicole Shi - Software Engineer
 
-See our other project done in parallel which takes [GIFs and creates the same thing in text form.](https://github.com/tiffxnychiu/GIF-to-ASCII)
 
 ## Demonstration
 ### Original
